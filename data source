@@ -1,0 +1,49 @@
+#https://spacelift.io/blog/terraform-data-sources-how-they-are-utilised
+data "aws_s3_bucket" "existing_bucket" {
+  bucket = "awsvarasai"   #this ur bucket name
+}
+output "bucket_id" {
+  value = data.aws_s3_bucket.existing_bucket.id
+}
+
+output "bucket_arn" {
+  value = data.aws_s3_bucket.existing_bucket.arn
+}
+
+output "bucket_region" {
+  value = data.aws_s3_bucket.existing_bucket.region
+}
+
+output "bucket_domain_name" {
+  value = data.aws_s3_bucket.existing_bucket.bucket_domain_name
+}
+
+
+
+root@ip-172-31-93-165:~/venu# terraform apply
+data.aws_s3_bucket.existing_bucket: Reading...
+data.aws_s3_bucket.existing_bucket: Read complete after 0s [id=awsvarasai]
+
+Changes to Outputs:
+  + bucket_arn         = "arn:aws:s3:::awsvarasai"
+  + bucket_domain_name = "awsvarasai.s3.amazonaws.com"
+  + bucket_id          = "awsvarasai"
+  + bucket_region      = "us-east-1"
+
+You can apply this plan to save these new output values to the Terraform state, without changing any real infrastructure.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+
+Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+bucket_arn = "arn:aws:s3:::awsvarasai"
+bucket_domain_name = "awsvarasai.s3.amazonaws.com"
+bucket_id = "awsvarasai"
+bucket_region = "us-east-1"
