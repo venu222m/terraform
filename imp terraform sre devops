@@ -1,0 +1,210 @@
+Here’s a concrete guide to how Terraform is used in DevOps/SRE roles, tailored for 3.5+ years of experience, covering:
+
+✅ Real-time tasks
+
+🧰 CLI commands
+
+💡 Use cases
+
+🎯 Top interview Q&A
+
+✅ Real-Time Terraform Responsibilities (DevOps/SRE)
+Task	Details
+Infrastructure Provisioning	Use Terraform to create VMs, VPCs, storage, AKS/EKS, etc.
+IaC Management	Maintain reusable .tf files in Git
+CI/CD Integration	Automate Terraform apply via Jenkins, Azure DevOps
+State Management	Manage remote state with locking (Azure Storage, S3)
+Modularization	Use modules for reusable infra (network, compute, db)
+Change Reviews	Plan files used in pull requests for safe deployments
+Secrets Management	Integrate with Azure Key Vault, AWS SSM for sensitive vars
+
+🧰 Most Used Terraform CLI Commands
+bash
+Copy
+Edit
+# Initialize working directory (downloads providers & modules)
+terraform init
+
+# Validate configuration files
+terraform validate
+
+# Format Terraform code
+terraform fmt
+
+# Check what will be created/modified/destroyed
+terraform plan
+
+# Apply the changes
+terraform apply
+
+# Destroy resources created by Terraform
+terraform destroy
+
+# Show current state
+terraform show
+
+# Output variable values
+terraform output
+
+# Save plan to file
+terraform plan -out=tfplan
+
+# Apply from saved plan
+terraform apply tfplan
+💡 Common Use Cases in DevOps/SRE
+Use Case	Example
+VM Provisioning	Create EC2/Azure VM/Disks/NICs with tags, NSGs, etc.
+AKS/EKS Setup	Use Terraform to create managed K8s clusters
+VNet/VPC Peering	Peer networks across regions or accounts
+Load Balancers	Set up Azure ALB/ELB with rules, probes
+Auto Scaling	Define autoscale policies using Terraform resources
+Infra as Code Pipelines	Integrate with Azure DevOps, Jenkins
+State Backend	Use remote backend with locking (Azure Blob, S3 + DynamoDB)
+
+🧠 Top Interview Questions & Answers (Terraform)
+✅ Q1: What is Terraform and how is it used in DevOps?
+A:
+Terraform is an open-source Infrastructure as Code (IaC) tool by HashiCorp used to define and provision infrastructure declaratively across cloud providers like AWS, Azure, and GCP. In DevOps, it’s used for automated provisioning, repeatable environments, and version-controlled infra.
+
+✅ Q2: What is the difference between terraform plan and terraform apply?
+Command	Purpose
+plan	Shows what Terraform will do without making changes
+apply	Actually provisions or changes the infrastructure
+
+✅ Q3: How do you manage sensitive data in Terraform?
+A:
+
+Use terraform.tfvars and don’t commit to Git
+
+Use environment variables (e.g. TF_VAR_password)
+
+Use external secrets managers like:
+
+AWS SSM Parameter Store
+
+Azure Key Vault (azurerm_key_vault_secret)
+
+Mark variables as sensitive in variables.tf:
+
+hcl
+Copy
+Edit
+variable "password" {
+  sensitive = true
+}
+✅ Q4: What is Terraform state and why is it important?
+A:
+Terraform stores the infrastructure configuration in a state file (terraform.tfstate). It helps Terraform map real-world resources to your code.
+
+Local state is default, but not safe for team use.
+
+Remote state (e.g., Azure Storage, S3) is recommended.
+
+Use locking to avoid race conditions in pipelines.
+
+✅ Q5: How do you use remote backends in Terraform?
+Example: Azure Backend
+
+hcl
+Copy
+Edit
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "rg-terraform"
+    storage_account_name = "tfstateprod123"
+    container_name       = "tfstate"
+    key                  = "dev.terraform.tfstate"
+  }
+}
+Then run:
+
+bash
+Copy
+Edit
+terraform init
+✅ Q6: What is a Terraform provider?
+A:
+A provider is a plugin that interacts with the APIs of the infrastructure platform (e.g., azurerm, aws, kubernetes). You define it in your .tf files:
+
+hcl
+Copy
+Edit
+provider "azurerm" {
+  features {}
+}
+✅ Q7: What are Terraform modules and why use them?
+A:
+Modules allow you to reuse code for common infra components like VMs, networks, storage, etc.
+
+hcl
+Copy
+Edit
+module "network" {
+  source = "./modules/vnet"
+  name   = "dev-vnet"
+  location = "eastus"
+}
+Benefits:
+
+Reusability
+
+Organization
+
+Scalability
+
+✅ Q8: How do you integrate Terraform with CI/CD?
+A:
+You can use Azure DevOps, Jenkins, or GitHub Actions:
+
+Checkout code
+
+Run terraform init
+
+Run terraform plan and save output
+
+Run terraform apply -auto-approve (optional in prod)
+
+Use secure pipelines with backend, secrets injection, and approvals.
+
+✅ Q9: How do you handle different environments (dev/stage/prod) in Terraform?
+A:
+
+Use workspaces:
+
+bash
+Copy
+Edit
+terraform workspace new dev
+terraform workspace select dev
+Use different variable files:
+
+bash
+Copy
+Edit
+terraform apply -var-file=dev.tfvars
+✅ Q10: What are the lifecycle rules in Terraform?
+A:
+Control resource behavior using lifecycle block:
+
+hcl
+Copy
+Edit
+resource "azurerm_virtual_machine" "example" {
+  name = "demo-vm"
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes = [tags]
+  }
+}
+📌 Resume Points (Terraform in DevOps – 3.5+ Yrs)
+Designed and implemented infrastructure using Terraform for multi-cloud platforms (Azure, AWS)
+
+Used remote state management and locking with Azure Storage/S3
+
+Modularized Terraform code to create reusable infrastructure components
+
+Integrated Terraform with Azure DevOps for end-to-end automated provisioning
+
+Managed state files, secrets, and version-controlled infrastructure for audit and rollback
+
+Used Terraform for provisioning AKS/EKS clusters and Kubernetes add-ons
